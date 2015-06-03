@@ -64,7 +64,6 @@ public class StaticController {
         return "{code:0}";
     }
 
-
     /**
      * 用户上传图片
      * @return

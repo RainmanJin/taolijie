@@ -61,10 +61,10 @@ public class ApiController {
     /**
      * 查询所有兼职
      */
-    @RequestMapping(value = "/list/job/{page}",method = RequestMethod.GET,produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/list/job/{page}",method = {RequestMethod.POST,RequestMethod.OPTIONS},produces = "application/json;charset=utf-8")
     public @ResponseBody String allJobList(@PathVariable int page,HttpServletResponse response){
         /*允许跨域,便于调试*/
-//        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         int capcity = Constants.PAGE_CAPACITY;
         List<JobPostDto> list = jobPostService.getAllJobPostList(page - 1, capcity, new ObjWrapper());

@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <div class="segment user-top">
-  <div class="user-img">
+  <div class="user-img" id="userImg">
     <img src="/images/pig.jpg" alt="">
   </div>
   <div class="fr big-btn">
@@ -28,8 +28,8 @@
 <div class="segment user-nav">
   <ul>
     <li class=""><a href="/user/">个人资料</a></li>
-    <li><a href="">我的简历</a></li>
-    <li><a href="">我的收藏</a></li>
+    <li><a href="/user/resume/create">我的简历</a></li>
+    <li><a href="/user/fav/job">我的收藏</a></li>
     <li><a href="">我的发布</a></li>
     <li><a href="">消息通知</a></li>
     <li><a href="/user/setting/security">修改密码</a></li>

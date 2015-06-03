@@ -22,7 +22,7 @@
 
     <!-- Handles HTTP GET requests for /resources/** by efficiently serving
         up static resources in the ${webappRoot}/resources directory -->
-    <resources mapping="/assets/**" location="/WEB-INF/views/assets/" />
+    <!--<resources mapping="/assets/**" location="/WEB-INF/views/assets/" />-->
 
     <!--管理员后台资源路径-->
     <resources mapping="/admin/**" location="/WEB-INF/views/pc/assets/admin/" />
@@ -30,6 +30,7 @@
     <resources mapping="/images/**" location="/WEB-INF/views/pc/assets/images/" />
     <resources mapping="/scripts/**" location="/WEB-INF/views/pc/assets/scripts/" />
     <resources mapping="/styles/**" location="/WEB-INF/views/pc/assets/styles/" />
+    <resources mapping="/fonts/**" location="/WEB-INF/views/pc/assets/fonts/"/>
 
 
 

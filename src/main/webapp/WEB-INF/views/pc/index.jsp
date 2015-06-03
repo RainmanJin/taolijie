@@ -57,20 +57,22 @@
       <%--二手--%>
       <c:forEach var="sh" items="${shs}" varStatus="status">
         <a href="/item/sh/${sh.id}">
+
         <div class="sh-slip fl ${status.index == 2 ? 'no-margin':null}">
-          <img src="${ (sh.picturePath) ? sh.picturePath : "/images/pig.jpg"}" alt="">
+          <div class="shs_pic"><img src="${ (sh.picturePath) ? sh.picturePath : "/images/pig.jpg"}" alt=""></div>
           <p class="titile">${sh.title}</p>
           <div class="fl">
             <p>${sh.categoryName}</p>
-            <span>${status.index}</span>
-            <span class="theme-color">${sh.verified}</span>
+            <span>${sh.memberDto.username}</span>
           </div>
           <span class="fr">￥${sh.sellPrice.intValue()}</span>
         </div>
         </a>
-
       </c:forEach>
     </div>
+
+
+
 
     <div style="clean:both"></div>
 
@@ -85,11 +87,11 @@
         <p>使用指南</p>
       </div>
       <div>
-        <a href=""><span class="fa fa-users theme-color-bg white"></span></a>
+        <a href=""><span class="fa fa-users"></span></a>
         <p>关于我们</p>
       </div>
       <div>
-        <a href=""><span class="fa fa-phone  theme-color-bg white"></span></a>
+        <a href=""><span class="fa fa-phone"></span></a>
         <p>联系我们</p>
       </div>
       <div>

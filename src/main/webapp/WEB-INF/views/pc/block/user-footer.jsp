@@ -23,4 +23,8 @@
 <!-- endbuild -->
 
 
+<script src="http://127.0.0.1:8888/webuploader/dist/webuploader.js"></script>
+<script src="/scripts/upload.js"></script>
+
+
 

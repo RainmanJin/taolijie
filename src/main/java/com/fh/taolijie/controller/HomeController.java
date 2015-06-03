@@ -11,6 +11,7 @@ import com.fh.taolijie.exception.checked.UserNotExistsException;
 import com.fh.taolijie.service.*;
 import com.fh.taolijie.utils.*;
 import com.fh.taolijie.utils.json.JsonWrapper;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,26 +83,28 @@ public class HomeController {
 
 
     /**
-     * 切换学校 ajax post
-     * 学校信息放入session中，并保存cookie
-     * @return
-     */
-    @Deprecated
-    @RequestMapping(value = "changeschool",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
-    public @ResponseBody String changeSchool(){
-        return "";
-    }
-
-
-    /**
      * 兼职列表页面 get
      */
 
     @RequestMapping(value = {"list/job"},method = RequestMethod.GET)
-    public String joblist(@RequestParam(defaultValue = "0") int page,
+    public String joblist(@RequestParam(defaultValue = "1") int page,
+                          @RequestParam(defaultValue = "0") int cate,
+                          @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
                           Model model){
-        List<JobPostDto> jobs = jobPostService.getAllJobPostList(page,Constants.PAGE_CAPACITY,new ObjWrapper());
+        ObjWrapper objWrapper =new ObjWrapper();
+        List<JobPostDto> jobs ;
+        if(cate>0){
+            jobs = jobPostService.getJobPostListByCategory(cate,page-1,pageSize,objWrapper);
+        }
+        else{
+            jobs = jobPostService.getAllJobPostList(page-1,pageSize,objWrapper);
+        }
+
+        int totalPage = (Integer) objWrapper.getObj();
+
         model.addAttribute("jobs",jobs);
+        model.addAttribute("page",page);
+        model.addAttribute("totalPage",totalPage);
         return "pc/joblist";
     }
 
@@ -196,9 +199,24 @@ public class HomeController {
      * 二手列表
      */
     @RequestMapping(value = "list/sh",method = RequestMethod.GET)
-    public String shList(@RequestParam(defaultValue = "0") int page,Model model){
-        List<SecondHandPostDto> shs = shPostService.getAllPostList(page,Constants.PAGE_CAPACITY,new ObjWrapper());
+    public String shList(@RequestParam(defaultValue = "0") int page,
+                         @RequestParam(defaultValue = "0") int cate,
+                         @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
+                         Model model){
+
+        ObjWrapper objWrapper =new ObjWrapper();
+        List<SecondHandPostDto> shs;
+        if(cate>0){
+            shs = shPostService.getAndFilter(cate,false,page,pageSize,objWrapper);
+        }else{
+            shs = shPostService.getAllPostList(page,pageSize, objWrapper);
+        }
+
+        int totalPage = (Integer)objWrapper.getObj();
+
         model.addAttribute("shs",shs);
+        model.addAttribute("page",page);
+        model.addAttribute("totalPage",totalPage);
         return "pc/shlist";
     }
 
@@ -231,9 +249,23 @@ public class HomeController {
      * 简历库列表
      */
     @RequestMapping(value = {"list/resume"},method = RequestMethod.GET)
-    public String resumeList(Model model){
-        List<ResumeDto> resumes =resumeService.getAllResumeList(0, 9999, new ObjWrapper());
+    public String resumeList(@RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "0") int cate,
+                             @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
+                             Model model){
+        ObjWrapper objWrapper = new ObjWrapper();
+        if(cate>0){
+            //cate是兼职的cate
+        }
+        List<ResumeDto> resumes =resumeService.getAllResumeList(page, pageSize,objWrapper);
+        int totalPage = (Integer)objWrapper.getObj();
+
+
         model.addAttribute("resumes",resumes);
+        model.addAttribute("page",page);
+        model.addAttribute("pageSize",pageSize);
+        model.addAttribute("totalPage",totalPage);
+
         return "pc/resumelist";
     }
 
@@ -528,10 +560,44 @@ public class HomeController {
 
 
     @RequestMapping(value = "/404",method = RequestMethod.GET)
-    public String error(){
+    public String error(HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin", "*");
         return "pc/404";
     }
 
 
+    /**
+     * @param type 0代表兼职 , 1代表二手
+     * @param content
+     * @return
+     */
+    @RequestMapping(value ="/search", method = RequestMethod.GET)
+    public String search(@RequestParam String type,
+                         @RequestParam String content,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
+                         Model model){
+
+        //TODO 把搜索内容按空格划分
+        ObjWrapper objWrapper = new ObjWrapper();
+        if(type.equals("0")){
+            List<JobPostDto> list = jobPostService.runSearch("title",content.trim(),page,pageSize,objWrapper);
+            int totalPage = (Integer)objWrapper.getObj();
+            model.addAttribute("jobs",list);
+            model.addAttribute("page",page);
+            model.addAttribute("totalPage",totalPage);
+            return "pc/joblist";
+        }else if(type.equals("1")){
+            List<SecondHandPostDto> list = shPostService.runSearch("title",content.trim(),page,pageSize,objWrapper);
+            int totalPage = (Integer)objWrapper.getObj();
+            model.addAttribute("shs",list);
+            model.addAttribute("page",page);
+            model.addAttribute("totalPage",totalPage);
+            return "pc/shlist";
+        }
+
+        return "redirect:/";
+
+    }
 }
 

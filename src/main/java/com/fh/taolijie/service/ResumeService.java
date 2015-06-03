@@ -35,7 +35,6 @@ public interface ResumeService extends PageService {
     List<ResumeDto> getResumeList(Integer memId, int firstResult, int capacity, ObjWrapper wrap);
 
     /**
-     *
      * 获取某个用户的部分简历.
      * @param authority 设置简历权限类型
      * @return

@@ -194,6 +194,7 @@ public class Constants {
         public static final String FAILED = "操作失败";
         public static final String DELETE_FAILED = "删除失败";
         public static final String PARAM_ILLEGAL = "参数不合法";
+        public static final String ALREADY_DO = "已操作";
 
         public static final String CANT_DELETE_CURRENT_USER = "不能删除当前用户";
 

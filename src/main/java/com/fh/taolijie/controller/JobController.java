@@ -156,7 +156,7 @@ public class JobController {
         // 3.判断是否已经喜欢过了
         // TODO : 需要在数据库层面记录喜欢的用户
         if(userService.isJobPostAlreadyLiked(credential.getId(),id))
-            return  new JsonWrapper(false, Constants.ErrorType.FAILED).getAjaxMessage();
+            return  new JsonWrapper(false, Constants.ErrorType.ALREADY_DO).getAjaxMessage();
 
         // 4.set likes + 1
         if(!userService.likeJobPost(credential.getId(),id))
@@ -196,6 +196,25 @@ public class JobController {
     }
     //endregion
 
+    /**
+     * 举报一条兼职
+     */
+    @RequestMapping(value = "/complaint/{id}", method = RequestMethod.POST,
+            produces = "application/json;charset=utf-8")
+    public @ResponseBody String complaint(HttpSession session,@PathVariable int id){
+        Credential credential = CredentialUtils.getCredential(session);
+        if(credential == null){
+            return new JsonWrapper(false, Constants.ErrorType.NOT_LOGGED_IN).getAjaxMessage();
+        }
+        try{
+            jobPostService.complaint(id);
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return new JsonWrapper(false, Constants.ErrorType.ERROR).getAjaxMessage();
+        }
+        return new JsonWrapper(true,Constants.ErrorType.SUCCESS).getAjaxMessage();
+    }
 
     /**
      * 发布兼职 get

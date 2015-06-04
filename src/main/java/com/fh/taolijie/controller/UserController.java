@@ -76,7 +76,7 @@ public class UserController {
      * 个人中心
      */
     @RequestMapping(value = {"","/"},method = RequestMethod.GET)
-    public String user(HttpSession session,Model model,HttpServletRequest req){
+    public String user(HttpSession session,Model model){
         Credential credential = CredentialUtils.getCredential(session);
         if(credential==null){
             return "redirect:/login";
@@ -89,6 +89,26 @@ public class UserController {
 
         return "pc/user/profile";
 
+    }
+
+    /**
+     * 修改个人资料
+     */
+    @RequestMapping(value = "/profile", method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    public @ResponseBody String profile(HttpSession session,ProfileDto profileDto){
+        Credential credential = CredentialUtils.getCredential(session);
+        if(credential==null){
+            return "redirect:/login";
+        }
+        GeneralMemberDto user = accountService.findMember(credential.getId());
+        user.setLastPostTime(new Date());
+        user.setName(profileDto.getName());
+        user.setGender(profileDto.getGender());
+
+        if(!accountService.updateMember(user)){
+            return new JsonWrapper(false, Constants.ErrorType.ERROR).getAjaxMessage();
+        }
+        return  new JsonWrapper(true, Constants.ErrorType.SUCCESS).getAjaxMessage();
     }
 
 

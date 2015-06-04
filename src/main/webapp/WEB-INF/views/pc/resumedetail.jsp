@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: wynfrith
@@ -27,9 +28,12 @@
   <!-- 正文 -->
   <div class="detail main white-bg">
     <div class="detail-bar">
-      <span>${resume.id}的简历</span>
+      <span>${postUser.username}的简历</span>
         <a href="/"><p class="fl"><i class="fa fa-angle-left">&nbsp;&nbsp;</i>返回</p></a>
-      <p class="fr"><i class="fa fa-heart-o">&nbsp;&nbsp;</i>收藏</p>
+      <p class="fr" id="fav" data-id="${resume.id}" data-type="resume">
+        <i class="fa ${favStatus? 'fa-heart':'fa-heart-o'}">&nbsp;&nbsp;</i>
+        ${favStatus? '已收藏':'收藏'}
+      </p>
     </div>
     <div style="clean:both"></div>
     <div class="resume-info">
@@ -45,7 +49,12 @@
     <br/>
     <div class="resume-detail theme-color-bd theme-color-bg" >
       <div class="title">求职意向</div>
-      <p>${resume.intendCategoryId}</p>
+      <p>
+        <c:forEach items="${intendJobs}" var="intendJob">
+          ${intendJob}
+        </c:forEach>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+      </p>
       <div style="clear:both"></div>
     </div>
     <i class="resume-arrow theme-color"></i>
@@ -81,3 +90,6 @@
 
 <%--脚部--%>
 <jsp:include page="block/footer.jsp"/>
+<script src="/scripts/jobdetail.js"></script>
+</body>
+</html>

@@ -179,6 +179,48 @@ public class ResumeController{
 
 
     /**
+     * 收藏一条兼职
+     */
+    @RequestMapping(value = "/fav/{id}",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    //region 收藏一条兼职 fav
+    public @ResponseBody String fav (@PathVariable int id,HttpSession session){
+        Credential credential = CredentialUtils.getCredential(session);
+        if(credential == null)
+            return  new JsonWrapper(false, Constants.ErrorType.PERMISSION_ERROR).getAjaxMessage();
+        if(resumeService.findResume(id) == null)
+            return  new JsonWrapper(false, Constants.ErrorType.NOT_FOUND).getAjaxMessage();
+
+        //遍历用户的收藏列表
+        //如果没有这条兼职则添加,反之删除
+        GeneralMemberDto mem = accountService.findMember(credential.getId());
+        String[] favIds = {};
+        if(mem.getFavoriteResumeIds() != null)
+            favIds = mem.getFavoriteResumeIds() .split(";");
+        String favid = "";
+        for(String fId : favIds){
+            if(fId.equals(id+"")){
+                favid = fId;
+                break;
+            }
+        }
+
+        String status;
+        if(favid.equals("")){ //没有找到,则添加收藏
+            resumeService.favoriteResume(credential.getId(),id);
+            status = "0";
+        }else{
+        // TODO:否则删除收藏(为实现)
+//            resumeService.u(credential.getId(),id);
+//            status = "1";
+            status="0";
+        }
+
+        return new JsonWrapper(true, "status",status).getAjaxMessage();
+    }
+    //endregion
+
+
+    /**
      * 修改简历
      * 与创建简历同一个页面，只不过修改简历会填充好之前的字段
      * @param session 用户的信息

@@ -92,50 +92,50 @@
         </div>
       </div>
 
-      <div class="comment">
-        <p class="pin-title dark-green-bg">用户评论
-          <i class="pin-arrow dark-green-arrow"></i>
-        </p>
-        <div class="operates">
-          <div class="operate">
-            <span class="fa fa-thumbs-up" id="like"></span>
-            <p>100</p>
-          </div>
-          <div class="operate">
-            <span class="fa fa-thumbs-down" id="dislike"></span>
-            <p>1</p>
-          </div>
-          <div class="operate">
-            <span class="fa fa-comment" id="comment"></span>
-            <p>3</p>
-          </div>
-          <div class="operate">
-            <span class="text" id="compaint">举报</span>
-          </div>
-        </div>
-        <div class="content">
-          <div class="no-border-bottom">
-            <img src="/images/pig.jpg" alt="">
-            <p>wynfrith</p>
-            <span>这里环境很好,还有跟孩子们一起特别高兴,在这里收获的不仅仅是快乐!</span>
-          </div>
-          <div class="no-border-bottom">
-            <img src="/images/miao.jpg" alt="">
-            <p>喵帕斯 </p>
-            <span>这里环境很好,还有跟孩子们一起特别高兴,在这里收获的不仅仅是快乐!</span>
-          </div>
-          <div>
-            <img src="/images/pig.jpg" alt="">
-            <p>wynfrith <span>回复 喵帕斯</span></p>
-            <span>这里环境很好,还有跟孩子们一起特别高兴,在这里收获的不仅仅是快乐!</span>
-          </div>
-        </div>
-        <div class="review-bar">
-          <img src="/images/pig.jpg" alt="">
-          <input type="text" class="review-input" placeholder="发表评论">
-          <span class="review-span">评论</span>
-        </div>
-      </div>
+      <%--<div class="comment">--%>
+        <%--<p class="pin-title dark-green-bg">用户评论--%>
+          <%--<i class="pin-arrow dark-green-arrow"></i>--%>
+        <%--</p>--%>
+        <%--<div class="operates">--%>
+          <%--<div class="operate">--%>
+            <%--<span class="fa fa-thumbs-up" id="like"></span>--%>
+            <%--<p>100</p>--%>
+          <%--</div>--%>
+          <%--<div class="operate">--%>
+            <%--<span class="fa fa-thumbs-down" id="dislike"></span>--%>
+            <%--<p>1</p>--%>
+          <%--</div>--%>
+          <%--<div class="operate">--%>
+            <%--<span class="fa fa-comment" id="comment"></span>--%>
+            <%--<p>3</p>--%>
+          <%--</div>--%>
+          <%--<div class="operate">--%>
+            <%--<span class="text" id="compaint">举报</span>--%>
+          <%--</div>--%>
+        <%--</div>--%>
+        <%--<div class="content">--%>
+          <%--<div class="no-border-bottom">--%>
+            <%--<img src="/images/pig.jpg" alt="">--%>
+            <%--<p>wynfrith</p>--%>
+            <%--<span>这里环境很好,还有跟孩子们一起特别高兴,在这里收获的不仅仅是快乐!</span>--%>
+          <%--</div>--%>
+          <%--<div class="no-border-bottom">--%>
+            <%--<img src="/images/miao.jpg" alt="">--%>
+            <%--<p>喵帕斯 </p>--%>
+            <%--<span>这里环境很好,还有跟孩子们一起特别高兴,在这里收获的不仅仅是快乐!</span>--%>
+          <%--</div>--%>
+          <%--<div>--%>
+            <%--<img src="/images/pig.jpg" alt="">--%>
+            <%--<p>wynfrith <span>回复 喵帕斯</span></p>--%>
+            <%--<span>这里环境很好,还有跟孩子们一起特别高兴,在这里收获的不仅仅是快乐!</span>--%>
+          <%--</div>--%>
+        <%--</div>--%>
+        <%--<div class="review-bar">--%>
+          <%--<img src="/images/pig.jpg" alt="">--%>
+          <%--<input type="text" class="review-input" placeholder="发表评论">--%>
+          <%--<span class="review-span">评论</span>--%>
+        <%--</div>--%>
+      <%--</div>--%>
 
     </div>
 

@@ -33,8 +33,8 @@
     <div class="detail-bar">
       <span>兼职详情</span>
       <a href="/"><p class="fl"><i class="fa fa-angle-left">&nbsp;&nbsp;</i>返回</p></a>
-      <p class="fr">分享</p>
-      <p class="fr" id="fav" data-id="${job.id}">
+      <%--<p class="fr">分享</p>--%>
+      <p class="fr" id="fav" data-id="${job.id}" data-type="job">
           <i class="fa ${favStatus? 'fa-heart':'fa-heart-o'}">&nbsp;&nbsp;</i>
           ${favStatus? '已收藏':'收藏'}
       </p>
@@ -72,10 +72,10 @@
           <span id="like" data-id="${job.id}" class="fa fa-thumbs-up"></span>
           <p >${job.likes}</p>
         </div>
-        <div class="operate">
-          <span  id="dislike" data-id="${job.id}" class="fa fa-thumbs-down"></span>
-          <p >${job.dislikes}</p>
-        </div>
+        <%--<div class="operate">--%>
+          <%--<span  id="dislike" data-id="${job.id}" class="fa fa-thumbs-down"></span>--%>
+          <%--<p >${job.dislikes}</p>--%>
+        <%--</div>--%>
         <div class="operate">
           <span id="toComment" class="fa fa-comment"></span>
           <p >${reviews.size()}</p>

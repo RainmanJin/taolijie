@@ -254,12 +254,17 @@ public class HomeController {
                              @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
                              Model model){
         ObjWrapper objWrapper = new ObjWrapper();
+        List<ResumeDto> resumes;
         if(cate>0){
+            resumes = resumeService.getResumeListByIntend(cate);
             //cate是兼职的cate
+        }else{
+            resumes =resumeService.getAllResumeList(page, pageSize,objWrapper);
         }
-        List<ResumeDto> resumes =resumeService.getAllResumeList(page, pageSize,objWrapper);
-        int totalPage = (Integer)objWrapper.getObj();
-
+        int totalPage = 1;
+        if(objWrapper.getObj()!=null){
+            totalPage = (Integer)objWrapper.getObj();
+        }
 
         model.addAttribute("resumes",resumes);
         model.addAttribute("page",page);
@@ -277,7 +282,7 @@ public class HomeController {
      * @param model
      * @param session
      */
-    @RequestMapping(value = "detail/resume/{id}",method = RequestMethod.GET)
+    @RequestMapping(value = "item/resume/{id}",method = RequestMethod.GET)
     public String resumedetail(@PathVariable("id") int id,Model model,HttpSession session){
         boolean contactDisplay = false;
         RoleDto role = null;
@@ -294,19 +299,56 @@ public class HomeController {
         }
         System.out.println("resume:"+id);
         ResumeDto resumeDto = resumeService.findResume(id);
+        //查询求职意向
+        List<String> intend = new ArrayList<>();
+        for(int jId :resumeDto.getIntendCategoryId()){
+            JobPostDto intendJob = jobPostService.findJobPost(jId);
+            String cateName = intendJob.getCategoryName();
+            intend.add(cateName);
+        }
 
-        /*如果是用户或者为登陆,不会显示联系方式*/
-        if(contactDisplay == false){
-            resumeDto.setQq(null);
-            resumeDto.setEmail(null);
-            /*
-             可以不需要显示的东西设为null
-             前端
-             */
+        //查询发布人的用户名
+        GeneralMemberDto user = accountService.findMember(resumeDto.getMemberId());
+//        /*如果是用户或者为登陆,不会显示联系方式*/
+//        if(contactDisplay == false){
+//            resumeDto.setQq(null);
+//            resumeDto.setEmail(null);
+//            /*
+//             可以不需要显示的东西设为null
+//             前端
+//             */
+//        }
+
+        //收藏的显示状态
+        boolean status = false; //不显示
+        if(credential == null)
+            status =false;
+        else{ //查找有没有收藏
+            GeneralMemberDto member = accountService.findMember(credential.getId());
+            String[] favIds = {};
+            if(member.getFavoriteResumeIds() != null)
+                favIds = member.getFavoriteResumeIds() .split(";");
+
+            String favid = "";
+            for(String fId : favIds){
+                if(fId.equals(id+"")){
+                    favid = fId;
+                    break;
+                }
+            }
+            if(favid.equals("")){
+                status = false;
+            }else{
+                status = true;
+            }
+
         }
 
         model.addAttribute("resume",resumeDto);
-        model.addAttribute("contactDisplay",contactDisplay);
+        model.addAttribute("postUser",user);
+        model.addAttribute("favStatus",status);
+        model.addAttribute("intendJobs",intend);
+//        model.addAttribute("contactDisplay",contactDisplay);
         return "pc/resumedetail";
     }
 

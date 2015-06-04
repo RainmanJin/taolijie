@@ -21,8 +21,6 @@ public class GeneralMemberDto {
     @Length(min = 6,max =25,message = Constants.ErrorType.PASSWORD_ILLEGAL)
     private String password;
 
-    @NotEmpty(message = Constants.ErrorType.EMAIL_ILLEGAL)
-    @Length(min = 6,max =30,message = Constants.ErrorType.EMAIL_ILLEGAL)
     private String email;
 
     private String name;

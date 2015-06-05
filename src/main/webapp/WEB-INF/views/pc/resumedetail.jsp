@@ -9,13 +9,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%request.setCharacterEncoding("UTF-8") ;%>
 <jsp:include page="block/start.jsp">
-  <jsp:param name="title" value="${resume.id}的简历"/>
+  <jsp:param name="title" value="${postUser.username}的简历"/>
 </jsp:include>
 
 <%--顶栏--%>
 <jsp:include page="block/top-bar.jsp"/>
 <%--页首--%>
 <jsp:include page="block/header.jsp"/>
+<style>
+  .detail-bar p:hover,
+  .detail-bar p>a:hover{
+    color: #666 !important;
+  }
+</style>
 
 <div class="container">
 
@@ -29,11 +35,20 @@
   <div class="detail main white-bg">
     <div class="detail-bar">
       <span>${postUser.username}的简历</span>
-        <a href="/"><p class="fl"><i class="fa fa-angle-left">&nbsp;&nbsp;</i>返回</p></a>
-      <p class="fr" id="fav" data-id="${resume.id}" data-type="resume">
-        <i class="fa ${favStatus? 'fa-heart':'fa-heart-o'}">&nbsp;&nbsp;</i>
-        ${favStatus? '已收藏':'收藏'}
-      </p>
+        <a href="/" style="color: #fa6a38"><p class="fl"><i class="fa fa-angle-left">&nbsp;&nbsp;</i>返回</p></a>
+
+      <c:if test="${!isShow}">
+        <p class="fr" id="del" data-id="${resume.id}" data-type="resume" style="cursor: pointer">删除</p>
+    <p class="fr" id="edit" data-id="${resume.id}" data-type="resume" style="cursor: pointer"><a href="/user/resume/change" style="color: #fa6a38">编辑</a></p>
+      </c:if>
+
+      <c:if test="${isShow}">
+        <p class="fr" id="fav" data-id="${resume.id}" data-type="resume">
+          <i class="fa ${favStatus? 'fa-heart':'fa-heart-o'}">&nbsp;&nbsp;</i>
+            ${favStatus? '已收藏':'收藏'}
+        </p>
+      </c:if>
+
     </div>
     <div style="clean:both"></div>
     <div class="resume-info">

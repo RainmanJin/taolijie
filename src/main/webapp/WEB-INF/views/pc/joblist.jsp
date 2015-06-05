@@ -46,7 +46,7 @@
         </ul>
         <div class="lists">
             <c:forEach var="job" items="${jobs}" varStatus="status">
-                <a href="/item/job/${job.id}">
+                <a href="/item/job/${job.id}" style="color: #353f4f">
                     <div class="list">
                         <div class="list-type">
 

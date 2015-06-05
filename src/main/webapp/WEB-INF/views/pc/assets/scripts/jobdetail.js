@@ -138,4 +138,20 @@ $("#fav").on("click",function(){
     });
 });
 
+$("#del").on("click",function(){
+    var id = this.getAttribute("data-id");
+    var type = this.getAttribute("data-type");
+    var $this = $(this);
+    $.ajax({
+        type:"POST",
+        url:"/user/"+type+"/del",
+        success:function(data){
+            if(data.result){
+                alert("简历已删除");
+                window.location = '/user';
+            }
+        }
+    });
+});
+
 

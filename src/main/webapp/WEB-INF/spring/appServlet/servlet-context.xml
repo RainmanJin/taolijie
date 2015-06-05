@@ -31,6 +31,7 @@
     <resources mapping="/scripts/**" location="/WEB-INF/views/pc/assets/scripts/" />
     <resources mapping="/styles/**" location="/WEB-INF/views/pc/assets/styles/" />
     <resources mapping="/fonts/**" location="/WEB-INF/views/pc/assets/fonts/"/>
+    <resources mapping="/about/**" location="/WEB-INF/views/pc/assets/about/"/>
 
 
 

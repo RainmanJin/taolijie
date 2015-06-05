@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -123,7 +124,21 @@ public class ResumeController{
             return "redirect:/user/resume/create";
         }
         ResumeDto resume = list.get(0);
+
+        GeneralMemberDto user = accountService.findMember(resume.getMemberId());
+        //查询求职意向
+        List<String> intend = new ArrayList<>();
+        for(int jId :resume.getIntendCategoryId()){
+            JobPostCategoryDto intendJobCate = jobPostCateService.findCategory(jId);
+            System.out.println(intendJobCate);
+            String cateName = intendJobCate.getName();
+            intend.add(cateName);
+        }
+
+        model.addAttribute("intendJobs",intend);
         model.addAttribute("resume",resume);
+        model.addAttribute("isShow",false);
+        model.addAttribute("postUser",user);
         return  "pc/resumedetail";
 
     }
@@ -247,7 +262,7 @@ public class ResumeController{
         }
 
         model.addAttribute("resume",resume);
-        return "mobile/resumedetail";
+        return "pc/user/myresume";
     }
 
     /**

@@ -48,6 +48,8 @@ public class HomeController {
     AccountService accountService;
     @Autowired
     ReviewService reviewService;
+    @Autowired
+    JobPostCateService jobPostCateService;
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -72,7 +74,7 @@ public class HomeController {
         List<SecondHandPostDto> shs = shPostService.getAllPostList(0, 3, new ObjWrapper());
 
         model.addAttribute("news", news);
-       model.addAttribute("jobs", jobs);
+        model.addAttribute("jobs", jobs);
         model.addAttribute("shs", shs);
         model.addAttribute("mem",credential);
 
@@ -297,13 +299,14 @@ public class HomeController {
                }
            }
         }
-        System.out.println("resume:"+id);
+        System.out.println("resume:" + id);
         ResumeDto resumeDto = resumeService.findResume(id);
         //查询求职意向
         List<String> intend = new ArrayList<>();
         for(int jId :resumeDto.getIntendCategoryId()){
-            JobPostDto intendJob = jobPostService.findJobPost(jId);
-            String cateName = intendJob.getCategoryName();
+            JobPostCategoryDto intendJobCate = jobPostCateService.findCategory(jId);
+            System.out.println(intendJobCate);
+            String cateName = intendJobCate.getName();
             intend.add(cateName);
         }
 
@@ -341,12 +344,12 @@ public class HomeController {
             }else{
                 status = true;
             }
-
         }
 
         model.addAttribute("resume",resumeDto);
         model.addAttribute("postUser",user);
         model.addAttribute("favStatus",status);
+        model.addAttribute("isShow",true);//显示收藏
         model.addAttribute("intendJobs",intend);
 //        model.addAttribute("contactDisplay",contactDisplay);
         return "pc/resumedetail";

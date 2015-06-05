@@ -68,13 +68,13 @@
               <div class="bubble-arrow-inner"></div>
             </div>
             <div class="place">
-              <p>暂无字段</p>
+              <p>${sh.tradePlace}</p>
             </div>
           </div>
         </div>
         <div style="clean:both"></div>
         <span class="sh-title">${sh.title}</span>
-        <span class="fr">浏览量 ：${sh.likes}</span>
+        <%--<span class="fr">浏览量 ：${sh.likes}</span>--%>
         <span class="fr">发布时间：${sh.postTime}</span>
         <!-- 分享（暂时不实现） -->
         <div class="share"></div>

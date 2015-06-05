@@ -49,7 +49,7 @@
 
           <div class="shs">
               <c:forEach var="sh" items="${shs}" varStatus="status">
-                  <a href="/item/sh/${sh.id}">
+                  <a href="/item/sh/${sh.id}" style="color: #333333">
                       <div class="sh-slip fl ${(status.index+1)%3 == 0 ? 'no-margin-right':''}" >
                           <img src="/images/pig.jpg" alt="">
                           <p class="titile">${sh.title}</p>

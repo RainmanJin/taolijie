@@ -36,7 +36,7 @@
     <div class="segment jobs">
       <%--兼职--%>
       <c:forEach var="job" items="${jobs}">
-        <a href="/item/job/${job.id}">
+        <a href="/item/job/${job.id}" style="color:#333333;">
           <div class="job-slip">
             <span class="cate">${job.categoryName}</span>
             <span class="content">${job.title}</span>
@@ -56,7 +56,7 @@
 
       <%--二手--%>
       <c:forEach var="sh" items="${shs}" varStatus="status">
-        <a href="/item/sh/${sh.id}">
+        <a href="/item/sh/${sh.id}" style="color:#333333;">
 
         <div class="sh-slip fl ${status.index == 2 ? 'no-margin':null}">
           <div class="shs_pic"><img src="${ (sh.picturePath) ? sh.picturePath : "/images/pig.jpg"}" alt=""></div>
@@ -83,19 +83,19 @@
     </div>
     <div class="segment auto about">
       <div>
-        <a href=""><span class="fa fa-compass"></span></a>
+        <a href="/about/index.html#firstPage"><span class="fa fa-compass"></span></a>
         <p>使用指南</p>
       </div>
       <div>
-        <a href=""><span class="fa fa-users"></span></a>
+        <a href="/about/index.html#secondPage"><span class="fa fa-users"></span></a>
         <p>关于我们</p>
       </div>
       <div>
-        <a href=""><span class="fa fa-phone"></span></a>
+        <a href="/about/index.html#thirdPage"><span class="fa fa-phone"></span></a>
         <p>联系我们</p>
       </div>
       <div>
-        <a href=""><span class="fa fa-users"></span></a>
+        <a href="/about/index.html#fourthPage"><span class="fa fa-users"></span></a>
         <p>加入我们</p>
       </div>
     </div>

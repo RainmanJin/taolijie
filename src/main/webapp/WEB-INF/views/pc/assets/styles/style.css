@@ -611,31 +611,35 @@ ul.bxslider li img {
     line-height: 60px;
     border-bottom: 1px solid #d5d5d5;
     cursor: pointer; }
-.side .services .menu_left > li:nth-child(n+1):hover {
+.side .services .menu_left > li a{
+    display: block;
+}
+.side .services .menu_left > li:nth-child(n+1) a:hover {
     color: #FFF; }
 .side .services .menu_left > li:nth-child(n+1):hover ul.submenu {
     display: block; }
-.side .services .menu_left > li:nth-child(1) {
+.side .services .menu_left > li:nth-child(1) a
+{
     color: #84cc5c; }
-.side .services .menu_left > li:nth-child(2) {
+.side .services .menu_left > li:nth-child(2) a{
     color: #4ccda4; }
-.side .services .menu_left > li:nth-child(3) {
+.side .services .menu_left > li:nth-child(3) a{
     color: #3299de; }
-.side .services .menu_left > li:nth-child(4) {
+.side .services .menu_left > li:nth-child(4) a{
     color: #f36362; }
-.side .services .menu_left > li:nth-child(1):hover {
+.side .services .menu_left > li:nth-child(1) a:hover {
     background-color: #84cc5c; }
 .side .services .menu_left > li:nth-child(1):hover ul.submenu {
     background-color: #84cc5c; }
-.side .services .menu_left > li:nth-child(2):hover {
+.side .services .menu_left > li:nth-child(2) a:hover {
     background-color: #4ccda4; }
 .side .services .menu_left > li:nth-child(2):hover ul.submenu {
     background-color: #4ccda4; }
-.side .services .menu_left > li:nth-child(3):hover {
+.side .services .menu_left > li:nth-child(3) a:hover {
     background-color: #3299de; }
 .side .services .menu_left > li:nth-child(3):hover ul.submenu {
     background-color: #3299de; }
-.side .services .menu_left > li:nth-child(4):hover {
+.side .services .menu_left > li:nth-child(4) a:hover {
     background-color: #f36362; }
 .side .services .menu_left > li:nth-child(4):hover ul.submenu {
     background-color: #f36362; }

@@ -59,7 +59,7 @@
                               </div>
 
                               <div class="fr">
-                                  <p>${resume.introduce}</p>
+                                  <p>${resume.title}</p>
                                   <p>
                                       <span>更新时间 ： ${resume.createdTime}</span>
                                   </p>
@@ -73,13 +73,18 @@
           <div style="clear:both"></div>
           <div class="page">
               <ul>
-                  <li><a class="active" href="">1</a></li>
-                  <li><a href="">2</a></li>
-                  <li><a href="">3</a></li>
-                  <li><a href="">4</a></li>
-                  <li><a href="">5</a></li>
-                  <li><a href="">6</a></li>
-                  <li><a  class="next" href="">下一页</a></li>
+                  <c:if test="${page != 1}">
+                      <li><a class="next" href="/list/resume?page=${page-1}">上一页</a></li>
+                  </c:if>
+                  <c:forEach  begin="1" end="${totalPage}" var="item">
+                      <li><a class="${page == item ? 'active':''}" href="/list/job?resume=${item}">${item}</a></li>
+                  </c:forEach>
+                  <c:if test="${page < totalPage}">
+                      <li><a class="next" href="/list/resume?page=${page+1}">下一页</a></li>
+                  </c:if>
+                  <c:if test="${page > totalPage}">
+                      <h2>没有更多了</h2>
+                  </c:if>
               </ul>
           </div>
       </div>

@@ -59,7 +59,7 @@
                               <%--换成member的role--%>
                               <%--<span class="theme-color">1</span>--%>
                           </div>
-                          <span class="fr">￥${sh.sellPrice}</span>
+                          <span class="fr">￥${sh.sellPrice.intValue()}</span>
                       </div>
                   </a>
               </c:forEach>
@@ -70,17 +70,21 @@
               <div class="page">
                   <ul>
                       <c:if test="${page != 1}">
-                          <li><a class="next" href="/list/job?page=${page-1}">上一页</a></li>
+                          <li><a class="next" href="/list/sh?page=${page-1}">上一页</a></li>
                       </c:if>
-                      <c:forEach  begin="1" end="${totalPage}" var="item">
-                          <li><a class="${page == item ? 'active':''}" href="/list/job?page=${item}">${item}</a></li>
-                      </c:forEach>
-                      <c:if test="${page < totalPage}">
-                          <li><a class="next" href="/list/job?page=${page+1}">下一页</a></li>
+                      <c:if test="${page == 1}">
+                          <c:forEach  begin="1" end="${totalPage}" var="item">
+                              <li><a class="${page == item ? 'active':''}" href="/list/sh?page=${item}">${item}</a></li>
+                          </c:forEach>
+                          <c:if test="${page < totalPage}">
+                              <li><a class="next" href="/list/sh?page=${page+1}">下一页</a></li>
+                          </c:if>
+                          <c:if test="${page > totalPage}">
+                              <h2>没有更多了</h2>
+                          </c:if>
+
                       </c:if>
-                      <c:if test="${page > totalPage}">
-                          <h2>没有更多了</h2>
-                      </c:if>
+
                   </ul>
               </div>
           </div>

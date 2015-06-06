@@ -11,18 +11,21 @@
 
 <jsp:include page="../block/start.jsp" >
     <jsp:param name="title" value="个人资料修改"/>
+
 </jsp:include>
 
 <jsp:include page="../block/top-bar-reverse.jsp"></jsp:include>
 
 <div class="container user">
-    <jsp:include page="../block/user.jsp"></jsp:include>
+    <jsp:include page="../block/user.jsp">
+        <jsp:param name="navShow" value="profile"/>
+    </jsp:include>
 
     <div class="segment personal">
         <p class="pin-title  dark-green-bg">账号信息
             <i class="pin-arrow  dark-green-arrow"></i>
         </p>
-        <p  class="accout-info">账号： Wynfrith <span>学生</span></p>
+        <p  class="accout-info">账号： ${sessionScope.user.username}<span>${sessionScope.role.memo}</span></p>
         <p class="pin-title  dark-green-bg">基本信息
             <i class="pin-arrow  dark-green-arrow"></i>
         </p>

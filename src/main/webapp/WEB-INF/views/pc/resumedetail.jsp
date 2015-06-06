@@ -54,11 +54,11 @@
     <div class="resume-info">
       <img src="/images/miao.jpg" alt="">
       <div class="infos">
+          <p>姓名 : ${resume.name}</p>
+          <p>性别 : ${resume.gender == '男' ? '男' : '女'}</p>
         <p>年龄 : ${resume.age}岁</p>
         <p>身高 : ${resume.height}cm</p>
-        <p>城市 : 暂无</p>
-        <p>学校 : 暂无</p>
-        <p>专业 : 暂无</p>
+        <p>学校 : ${resume.school}</p>
       </div>
     </div>
     <br/>

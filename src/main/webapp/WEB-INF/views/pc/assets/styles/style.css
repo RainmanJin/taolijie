@@ -627,20 +627,20 @@ ul.bxslider li img {
     color: #3299de; }
 .side .services .menu_left > li:nth-child(4) a{
     color: #f36362; }
-.side .services .menu_left > li:nth-child(1) a:hover {
-    background-color: #84cc5c; }
+.side .services .menu_left > li:nth-child(1)> a:hover {
+    background-color: #84cc5c !important; }
 .side .services .menu_left > li:nth-child(1):hover ul.submenu {
     background-color: #84cc5c; }
-.side .services .menu_left > li:nth-child(2) a:hover {
-    background-color: #4ccda4; }
+.side .services .menu_left > li:nth-child(2)>a:hover {
+    background-color: #4ccda4 !important; }
 .side .services .menu_left > li:nth-child(2):hover ul.submenu {
     background-color: #4ccda4; }
-.side .services .menu_left > li:nth-child(3) a:hover {
-    background-color: #3299de; }
+.side .services .menu_left > li:nth-child(3)>a:hover {
+    background-color: #3299de !important;; }
 .side .services .menu_left > li:nth-child(3):hover ul.submenu {
     background-color: #3299de; }
-.side .services .menu_left > li:nth-child(4) a:hover {
-    background-color: #f36362; }
+.side .services .menu_left > li:nth-child(4)> a:hover {
+    background-color: #f36362 !important;; }
 .side .services .menu_left > li:nth-child(4):hover ul.submenu {
     background-color: #f36362; }
 .side .services .menu_left .submenu {
@@ -650,9 +650,11 @@ ul.bxslider li img {
     background-color: red;
     display: none; }
 .side .services .menu_left .submenu > li {
+
     float: left;
     color: #fff;
-    width: 50px;
+    width: 100px;
+    margin: 5px 5px 5px 5px;
     line-height: 30px; }
 .side .services .menu_left .submenu > li:hover {
     background-color: #EEBC5B; }

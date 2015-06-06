@@ -349,12 +349,6 @@ public class UserController {
         return new JsonWrapper(true, Constants.ErrorType.SUCCESS).getAjaxMessage();
     }
 
-    /**
-     * 用户收藏
-     */
-    @RequestMapping(value = "fav/job" ,method = RequestMethod.GET)
-    public String fav(HttpSession session){
-        return "pc/user/favjob";
-    }
+
 
 }

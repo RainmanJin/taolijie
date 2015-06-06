@@ -19,6 +19,9 @@ public class ResumeDto {
     private String qq;
     private String experience;
     private String introduce;
+    private String time;
+    private String title;
+    private String school;
 
     private Date createdTime;
     private String accessAuthority;
@@ -195,6 +198,32 @@ public class ResumeDto {
     }
 
     public void setMemberId(Integer memberId) {
+
         this.memberId = memberId;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+
+        this.title = title;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
     }
 }

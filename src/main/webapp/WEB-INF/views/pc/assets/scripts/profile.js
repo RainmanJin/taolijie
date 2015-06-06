@@ -11,8 +11,10 @@ $(".submit-btn").click(function(){
         data: data,
         success: function(data){
             console.log(data);
-            if(data.result)
+            if(data.result){
                 alert("修改资料成功");
+                window.location.href = "/user";
+            }
             else
                 alert(data.message);
         }

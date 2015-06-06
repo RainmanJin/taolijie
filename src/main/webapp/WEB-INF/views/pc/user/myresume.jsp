@@ -15,7 +15,9 @@
 <jsp:include page="../block/top-bar-reverse.jsp"></jsp:include>
 
 <div class="container user">
-    <jsp:include page="../block/user.jsp"></jsp:include>
+    <jsp:include page="../block/user.jsp">
+      <jsp:param name="navShow" value="resume"/>
+    </jsp:include>
   <div class="segment infos resume link-segment">
     <p class="pin-title">个人信息
       <i class="pin-arrow"></i>
@@ -42,6 +44,15 @@
         <input name="age" class="short-input form-control" type="text" placeholder="" value="${resume.age}">
         <%--<span> 例如 <span class="dark-green">(1993-1-1)</span></span>--%>
       </div>
+      <div class="form-group">
+        <label for="">学校<i class="theme-color">*</i></label>
+        <input name="school" class=" form-control" type="text" placeholder="输入学校" value="${resume.school ? resume.school : '山东理工大学'}">
+        <%--<span> 例如 <span class="dark-green">(1993-1-1)</span></span>--%>
+      </div>
+        <div class="form-group">
+            <input id="UserImg" title="浏览文件" type="file" />
+        </div>
+
       <%--<div class="form-group">--%>
         <%--<label for="">城&nbsp;&nbsp;&nbsp;&nbsp;市<i class="theme-color">*</i></label>--%>
         <%--<input type="text" class="form-control" placeholder="填写您所在城市">--%>
@@ -56,7 +67,7 @@
 
       <div class="form-group">
         <label for="">简历标题<i class="theme-color">*</i></label>
-        <input type="text" class="form-control" placeholder="例：兼职派单员" value="">
+        <input type="text" name="title" class="form-control" placeholder="例：兼职派单员" value="${resume.title}">
       </div>
       <div class="form-group">
         <label for="">求职意向<i class="theme-color">*</i></label>
@@ -69,7 +80,7 @@
       </div>
       <div class="form-group">
         <label for="">空闲时间<i class="theme-color">*</i></label>
-        <input type="text" name="freeTime" value="" class="form-control" placeholder="自己具体填写">
+        <input type="text" name="time" value="" class="form-control" placeholder="自己具体填写">
       </div>
       <div class="form-group">
         <label for="">公开程度</label>

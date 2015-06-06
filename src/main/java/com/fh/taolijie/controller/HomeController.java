@@ -50,80 +50,79 @@ public class HomeController {
     ReviewService reviewService;
     @Autowired
     JobPostCateService jobPostCateService;
+    @Autowired
+    ImageService imageService;
 
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
-	/**
-	 * 主页 get
-	 */
-	@RequestMapping(value = {"index","/"}, method = {RequestMethod.GET,RequestMethod.HEAD})
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+
+    /**
+     * 主页 get
+     */
+    @RequestMapping(value = {"index", "/"}, method = {RequestMethod.GET, RequestMethod.HEAD})
     //region 主页 home
-	public String home(HttpSession session,
+    public String home(HttpSession session,
                        Model model,
-                       HttpServletRequest req,ModelAndView modelAndView) {
-        System.out.println("session"+session);
-        Credential credential =  CredentialUtils.getCredential(session);
+                       HttpServletRequest req, ModelAndView modelAndView) {
+        System.out.println("session" + session);
+        Credential credential = CredentialUtils.getCredential(session);
 
-        if(credential!=null){
+        if (credential != null) {
 
         }
 
         // 二手物品需要加入一个发布人
-        List<NewsDto> news = newsService.getNewsList(0,3, new ObjWrapper());
+        List<NewsDto> news = newsService.getNewsList(0, 3, new ObjWrapper());
         List<JobPostDto> jobs = jobPostService.getAllJobPostList(0, 6, new ObjWrapper());
         List<SecondHandPostDto> shs = shPostService.getAllPostList(0, 3, new ObjWrapper());
 
         model.addAttribute("news", news);
         model.addAttribute("jobs", jobs);
         model.addAttribute("shs", shs);
-        model.addAttribute("mem",credential);
+        model.addAttribute("mem", credential);
 
         return "pc/index";
-	}
+    }
     //endregion
-
 
 
     /**
      * 兼职列表页面 get
      */
 
-    @RequestMapping(value = {"list/job"},method = RequestMethod.GET)
+    @RequestMapping(value = {"list/job"}, method = RequestMethod.GET)
     public String joblist(@RequestParam(defaultValue = "1") int page,
                           @RequestParam(defaultValue = "0") int cate,
-                          @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
-                          Model model){
-        ObjWrapper objWrapper =new ObjWrapper();
-        List<JobPostDto> jobs ;
-        if(cate>0){
-            jobs = jobPostService.getJobPostListByCategory(cate,page-1,pageSize,objWrapper);
-        }
-        else{
-            jobs = jobPostService.getAllJobPostList(page-1,pageSize,objWrapper);
+                          @RequestParam(defaultValue = Constants.PAGE_CAPACITY + "") int pageSize,
+                          Model model) {
+        ObjWrapper objWrapper = new ObjWrapper();
+        List<JobPostDto> jobs;
+        if (cate > 0) {
+            jobs = jobPostService.getJobPostListByCategory(cate, page - 1, pageSize, objWrapper);
+        } else {
+            jobs = jobPostService.getAllJobPostList(page - 1, pageSize, objWrapper);
         }
 
         int totalPage = (Integer) objWrapper.getObj();
 
-        model.addAttribute("jobs",jobs);
-        model.addAttribute("page",page);
-        model.addAttribute("totalPage",totalPage);
+        model.addAttribute("jobs", jobs);
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
         return "pc/joblist";
     }
 
     /**
      * 查询一条兼职
-     *
      */
 
-    @RequestMapping(value = "item/job/{id}",method = RequestMethod.GET)
+    @RequestMapping(value = "item/job/{id}", method = RequestMethod.GET)
     //region 查询一条兼职 jobItem
-    public String jobItem(@PathVariable int id,HttpSession session,Model model){
+    public String jobItem(@PathVariable int id, HttpSession session, Model model) {
         JobPostDto job = jobPostService.findJobPost(id);
 
         // TODO: 把review中的memberId映射成member对象,暂时解决办法放到另一个dto中
-        List<ReviewDto> reviews = reviewService.getReviewList(id,0,9999,new ObjWrapper());
+        List<ReviewDto> reviews = reviewService.getReviewList(id, 0, 9999, new ObjWrapper());
         List<ReviewShowDto> reviewShow = new ArrayList<>();
-        for(ReviewDto r : reviews){
+        for (ReviewDto r : reviews) {
             ReviewShowDto show = new ReviewShowDto();
             show.setMember(accountService.findMember(r.getMemberId()));
             show.setTime(r.getTime());
@@ -134,7 +133,7 @@ public class HomeController {
             reviewShow.add(show);
         }
 
-        if(job == null){
+        if (job == null) {
             return "redirect:/404";
         }
         GeneralMemberDto poster = accountService.findMember(job.getMemberId());
@@ -144,105 +143,143 @@ public class HomeController {
         //收藏的显示状态
         boolean status = false; //不显示
         Credential credential = CredentialUtils.getCredential(session);
-        if(credential == null)
-            status =false;
-        else{ //查找有没有收藏
+        if (credential == null)
+            status = false;
+        else { //查找有没有收藏
             GeneralMemberDto member = accountService.findMember(credential.getId());
             String[] favIds = {};
-            if(member.getFavoriteJobIds() != null)
-                favIds = member.getFavoriteJobIds() .split(";");
-            
+            if (member.getFavoriteJobIds() != null)
+                favIds = member.getFavoriteJobIds().split(";");
+
             String favid = "";
-            for(String fId : favIds){
-                if(fId.equals(id+"")){
+            for (String fId : favIds) {
+                if (fId.equals(id + "")) {
                     favid = fId;
                     break;
                 }
             }
-            if(favid.equals("")){
+            if (favid.equals("")) {
                 status = false;
-            }else{
+            } else {
                 status = true;
             }
 
         }
 
 
-        model.addAttribute("job",job);
-        model.addAttribute("reviews",reviewShow);
-        model.addAttribute("poster",poster);
-        model.addAttribute("posterRole",role);
-        model.addAttribute("favStatus",status);
+        model.addAttribute("job", job);
+        model.addAttribute("reviews", reviewShow);
+        model.addAttribute("poster", poster);
+        model.addAttribute("posterRole", role);
+        model.addAttribute("favStatus", status);
         return "pc/jobdetail";
     }
     //endregion
 
 
-    @RequestMapping(value = "item/job/{id}/fav",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "item/job/{id}/fav", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     //region 收藏一条兼职信息
-    public @ResponseBody String favJob(@PathVariable int id,HttpSession session){
+    public
+    @ResponseBody
+    String favJob(@PathVariable int id, HttpSession session) {
         //判断用户是否登陆
         Credential credential = CredentialUtils.getCredential(session);
-        if(credential == null)
-            return  new JsonWrapper(false, Constants.ErrorType.NOT_LOGGED_IN).getAjaxMessage();
+        if (credential == null)
+            return new JsonWrapper(false, Constants.ErrorType.NOT_LOGGED_IN).getAjaxMessage();
         //查看id是否存在
         JobPostDto job = jobPostService.findJobPost(id);
-        if(job == null)
+        if (job == null)
             return new JsonWrapper(false, Constants.ErrorType.NOT_FOUND).getAjaxMessage();
         //判断是否fav过,如果没有,fav = true ,有 fav = false
         // TODO:判断收藏
         //返回fav的状态
-        return new JsonWrapper(true,"").getAjaxMessage();
+        return new JsonWrapper(true, "").getAjaxMessage();
     }
     //endregion
 
 
     /**
      * 二手列表
+     * 默认12个
      */
-    @RequestMapping(value = "list/sh",method = RequestMethod.GET)
-    public String shList(@RequestParam(defaultValue = "0") int page,
+    @RequestMapping(value = "list/sh", method = RequestMethod.GET)
+    public String shList(@RequestParam(defaultValue = "1") int page,
                          @RequestParam(defaultValue = "0") int cate,
-                         @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
-                         Model model){
+                         @RequestParam(defaultValue = "12") int pageSize,
+                         Model model) {
 
-        ObjWrapper objWrapper =new ObjWrapper();
+        ObjWrapper objWrapper = new ObjWrapper();
         List<SecondHandPostDto> shs;
-        if(cate>0){
-            shs = shPostService.getAndFilter(cate,false,page,pageSize,objWrapper);
-        }else{
-            shs = shPostService.getAllPostList(page,pageSize, objWrapper);
+        if (cate > 0) {
+            shs = shPostService.getAndFilter(cate, false, page-1, pageSize, objWrapper);
+        } else {
+            shs = shPostService.getAllPostList(page-1, pageSize, objWrapper);
         }
 
-        int totalPage = (Integer)objWrapper.getObj();
+        int totalPage = (Integer) objWrapper.getObj();
 
-        model.addAttribute("shs",shs);
-        model.addAttribute("page",page);
-        model.addAttribute("totalPage",totalPage);
+        model.addAttribute("shs", shs);
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
         return "pc/shlist";
     }
 
 
     /**
      * 查询一条二手
-     *
      */
-    @RequestMapping(value = "item/sh/{id}",method = RequestMethod.GET)
-    public String shItem(@PathVariable int id,HttpSession session,Model model){
+    @RequestMapping(value = "item/sh/{id}", method = RequestMethod.GET)
+    public String shItem(@PathVariable int id, HttpSession session, Model model) {
         SecondHandPostDto sh = shPostService.findPost(id);
-        if(sh == null){
+        if (sh == null) {
             return "redirect:/404";
         }
-        List<ReviewDto> reviews = reviewService.getReviewList(id,0,9999,new ObjWrapper());
+        List<ReviewDto> reviews = reviewService.getReviewList(id, 0, 9999, new ObjWrapper());
         //对应的用户和用户类别
         GeneralMemberDto poster = accountService.findMember(sh.getMemberId());
-        int roleId =poster.getRoleIdList().iterator().next();
+        int roleId = poster.getRoleIdList().iterator().next();
         RoleDto role = accountService.findRole(roleId);
 
-        model.addAttribute("sh",sh);
-        model.addAttribute("reviews",reviews);
-        model.addAttribute("poster",poster);
-        model.addAttribute("posterRole",role);
+        List<String> picIds = new ArrayList<>();
+        if (sh.getPicturePath() != null) {
+            for (String pid : sh.getPicturePath().split(";")) {
+                picIds.add(pid);
+            }
+        }
+
+
+        //收藏的显示状态
+        boolean status = false; //不显示
+        Credential credential = CredentialUtils.getCredential(session);
+        if (credential == null)
+            status = false;
+        else { //查找有没有收藏
+            GeneralMemberDto member = accountService.findMember(credential.getId());
+            String[] favIds = {};
+            if (member.getFavoriteShIds() != null)
+                favIds = member.getFavoriteShIds().split(";");
+
+            String favid = "";
+            for (String fId : favIds) {
+                if (fId.equals(id + "")) {
+                    favid = fId;
+                    break;
+                }
+            }
+            if (favid.equals("")) {
+                status = false;
+            } else {
+                status = true;
+            }
+
+        }
+
+        model.addAttribute("sh", sh);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("poster", poster);
+        model.addAttribute("posterRole", role);
+        model.addAttribute("pids", picIds);
+        model.addAttribute("favStatus", status);
         return "pc/shdetail";
     }
 
@@ -250,60 +287,62 @@ public class HomeController {
     /**
      * 简历库列表
      */
-    @RequestMapping(value = {"list/resume"},method = RequestMethod.GET)
-    public String resumeList(@RequestParam(defaultValue = "0") int page,
+    @RequestMapping(value = {"list/resume"}, method = RequestMethod.GET)
+    public String resumeList(@RequestParam(defaultValue = "1") int page,
                              @RequestParam(defaultValue = "0") int cate,
-                             @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
-                             Model model){
+                             @RequestParam(defaultValue = Constants.PAGE_CAPACITY + "") int pageSize,
+                             Model model) {
         ObjWrapper objWrapper = new ObjWrapper();
         List<ResumeDto> resumes;
-        if(cate>0){
+        if (cate > 0) {
             resumes = resumeService.getResumeListByIntend(cate);
             //cate是兼职的cate
-        }else{
-            resumes =resumeService.getAllResumeList(page, pageSize,objWrapper);
-        }
-        int totalPage = 1;
-        if(objWrapper.getObj()!=null){
-            totalPage = (Integer)objWrapper.getObj();
+        } else {
+            resumes = resumeService.getAllResumeList(page-1, pageSize, objWrapper);
         }
 
-        model.addAttribute("resumes",resumes);
-        model.addAttribute("page",page);
-        model.addAttribute("pageSize",pageSize);
-        model.addAttribute("totalPage",totalPage);
+        int totalPage = 1;
+        if (objWrapper.getObj() != null) {
+            totalPage = (Integer) objWrapper.getObj();
+        }
+
+        model.addAttribute("resumes", resumes);
+        model.addAttribute("page", page);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("totalPage", totalPage);
 
         return "pc/resumelist";
     }
 
     /**
      * 简历详情页
-     *
+     * <p/>
      * 权限 : 对为 未注册用户 和 学生 联系方式不可见
-     * @param id 简历的id号
+     *
+     * @param id      简历的id号
      * @param model
      * @param session
      */
-    @RequestMapping(value = "item/resume/{id}",method = RequestMethod.GET)
-    public String resumedetail(@PathVariable("id") int id,Model model,HttpSession session){
+    @RequestMapping(value = "item/resume/{id}", method = RequestMethod.GET)
+    public String resumedetail(@PathVariable("id") int id, Model model, HttpSession session) {
         boolean contactDisplay = false;
         RoleDto role = null;
         Credential credential = CredentialUtils.getCredential(session);
-        if(credential!= null){
-            GeneralMemberDto member= accountService.findMember(credential.getUsername(),new GeneralMemberDto[0],true);
-           for(String roleName:credential.getRoleList()){
-               System.out.println(roleName);
-               if(roleName.equals(Constants.RoleType.EMPLOYER.toString())||
-                       roleName.equals(Constants.RoleType.ADMIN.toString())){
-                   contactDisplay = true;
-               }
-           }
+        if (credential != null) {
+            GeneralMemberDto member = accountService.findMember(credential.getUsername(), new GeneralMemberDto[0], true);
+            for (String roleName : credential.getRoleList()) {
+                System.out.println(roleName);
+                if (roleName.equals(Constants.RoleType.EMPLOYER.toString()) ||
+                        roleName.equals(Constants.RoleType.ADMIN.toString())) {
+                    contactDisplay = true;
+                }
+            }
         }
         System.out.println("resume:" + id);
         ResumeDto resumeDto = resumeService.findResume(id);
         //查询求职意向
         List<String> intend = new ArrayList<>();
-        for(int jId :resumeDto.getIntendCategoryId()){
+        for (int jId : resumeDto.getIntendCategoryId()) {
             JobPostCategoryDto intendJobCate = jobPostCateService.findCategory(jId);
             System.out.println(intendJobCate);
             String cateName = intendJobCate.getName();
@@ -324,52 +363,51 @@ public class HomeController {
 
         //收藏的显示状态
         boolean status = false; //不显示
-        if(credential == null)
-            status =false;
-        else{ //查找有没有收藏
+        if (credential == null)
+            status = false;
+        else { //查找有没有收藏
             GeneralMemberDto member = accountService.findMember(credential.getId());
             String[] favIds = {};
-            if(member.getFavoriteResumeIds() != null)
-                favIds = member.getFavoriteResumeIds() .split(";");
+            if (member.getFavoriteResumeIds() != null)
+                favIds = member.getFavoriteResumeIds().split(";");
 
             String favid = "";
-            for(String fId : favIds){
-                if(fId.equals(id+"")){
+            for (String fId : favIds) {
+                if (fId.equals(id + "")) {
                     favid = fId;
                     break;
                 }
             }
-            if(favid.equals("")){
+            if (favid.equals("")) {
                 status = false;
-            }else{
+            } else {
                 status = true;
             }
         }
 
-        model.addAttribute("resume",resumeDto);
-        model.addAttribute("postUser",user);
-        model.addAttribute("favStatus",status);
-        model.addAttribute("isShow",true);//显示收藏
-        model.addAttribute("intendJobs",intend);
+        model.addAttribute("resume", resumeDto);
+        model.addAttribute("postUser", user);
+        model.addAttribute("favStatus", status);
+        model.addAttribute("isShow", true);//显示收藏
+        model.addAttribute("intendJobs", intend);
 //        model.addAttribute("contactDisplay",contactDisplay);
         return "pc/resumedetail";
     }
 
 
-
     /**
      * 新闻列表
      */
-    @RequestMapping(value = "list/news",method = RequestMethod.GET)
-    public String newslist(){
+    @RequestMapping(value = "list/news", method = RequestMethod.GET)
+    public String newslist() {
         return "pc/newslist";
     }
 
     /**
      * 新闻详细页面
      */
-    @RequestMapping(value = "detail/news/{nid}",method = RequestMethod.GET)
-    public String news(@PathVariable int nid,Model model) {
+    @RequestMapping(value = "detail/news/{nid}", method = RequestMethod.GET)
+    public String news(@PathVariable int nid, Model model) {
         NewsDto news = newsService.findNews(nid);
         model.addAttribute("news", news);
         return "pc/news";
@@ -378,10 +416,12 @@ public class HomeController {
     /**
      * 获取新闻列表请求 ajax Get
      */
-    @RequestMapping(value = "list/news/{pageid}",method = RequestMethod.GET,produces = "application/json;charset=utf-8")
-    public @ResponseBody String newslist(@PathVariable int pageid){
+    @RequestMapping(value = "list/news/{pageid}", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+    public
+    @ResponseBody
+    String newslist(@PathVariable int pageid) {
         int capcity = Constants.PAGE_CAPACITY;
-        List<NewsDto> list = newsService.getNewsList(pageid-1, capcity, new ObjWrapper());
+        List<NewsDto> list = newsService.getNewsList(pageid - 1, capcity, new ObjWrapper());
         return JSON.toJSONString(list);
     }
 
@@ -389,8 +429,8 @@ public class HomeController {
     /**
      * 注册页面
      */
-    @RequestMapping(value = "/register",method = RequestMethod.GET)
-    public String register(HttpServletRequest req){
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public String register(HttpServletRequest req) {
         return "pc/register";
     }
 
@@ -398,6 +438,7 @@ public class HomeController {
     /**
      * 注册用户
      * Method : POST AJAX
+     *
      * @param mem
      * @param result
      * @param session
@@ -407,18 +448,22 @@ public class HomeController {
     @RequestMapping(value = "/register", method = RequestMethod.POST,
             produces = "application/json;charset=utf-8")
     //region 注册用户 public @ResponseBody String register
-    public @ResponseBody String register(@Valid RegisterDto mem,
-                                         BindingResult result,
-                                         HttpSession session,
-                                         HttpServletResponse res){
+    public
+    @ResponseBody
+    String register(@Valid RegisterDto mem,
+                    BindingResult result,
+                    HttpSession session,
+                    HttpServletResponse res) {
+        int DEFAULT_INM_ID = 11;
+
         // TODO: 需要验证邮箱的唯一性
         //验证表单错误
-        if(result.hasErrors()){
-            return new JsonWrapper(false,result.getAllErrors()).getAjaxMessage();
+        if (result.hasErrors()) {
+            return new JsonWrapper(false, result.getAllErrors()).getAjaxMessage();
         }
         //两次密码不一致
-        if(!(mem.getPassword().equals(mem.getRepassword()))){
-            return new JsonWrapper(false,Constants.ErrorType.REPASSWORD_ERROR).getAjaxMessage();
+        if (!(mem.getPassword().equals(mem.getRepassword()))) {
+            return new JsonWrapper(false, Constants.ErrorType.REPASSWORD_ERROR).getAjaxMessage();
         }
 
         //注册不同权限的账户
@@ -428,9 +473,10 @@ public class HomeController {
         String roleName = mem.getIsEmployer() ?
                 Constants.RoleType.EMPLOYER.toString() :
                 Constants.RoleType.STUDENT.toString();
-        int roleId = ControllerHelper.getRoleId(roleName,accountService);
-        if(roleId == -1)
-            return new JsonWrapper(false,Constants.ErrorType.ERROR).getAjaxMessage();
+        int roleId = ControllerHelper.getRoleId(roleName, accountService);
+        if (roleId == -1)
+            return new JsonWrapper(false, Constants.ErrorType.ERROR).getAjaxMessage();
+
 
         GeneralMemberDto newMember = new GeneralMemberDto();
         newMember.setUsername(mem.getUsername());
@@ -438,11 +484,13 @@ public class HomeController {
         newMember.setValid(true);
         newMember.setCreated_time(new Date());
         newMember.setRoleIdList(Arrays.asList(roleId));
+        newMember.setProfilePhotoId(DEFAULT_INM_ID); // 默认用户头像,更改直接换图片id
+
         //注册并且检查用户名是否存在
         try {
             accountService.register(newMember);
         } catch (DuplicatedUsernameException e) {
-            return new JsonWrapper(false,e.getMessage()).getAjaxMessage();
+            return new JsonWrapper(false, e.getMessage()).getAjaxMessage();
         }
 
         //accountService.assignRole(roleId,mem.getUsername());
@@ -452,19 +500,20 @@ public class HomeController {
     //endregion
 
 
-
     /**
      * 登陆页面
+     *
      * @param req
      * @return
      */
-    @RequestMapping(value = "/login",method = RequestMethod.GET)
-    public String login(HttpServletRequest req){
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(HttpServletRequest req) {
         return "pc/login";
     }
 
     /**
      * ajax登陆请求
+     *
      * @param mem
      * @param result
      * @param session
@@ -473,51 +522,55 @@ public class HomeController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     //region 登陆请求 login
-    public @ResponseBody String login(@Valid LoginDto mem,
-                                      BindingResult result,
-                                      HttpSession session,
-                                      HttpServletResponse res){
+    public
+    @ResponseBody
+    String login(@Valid LoginDto mem,
+                 BindingResult result,
+                 HttpSession session,
+                 HttpServletResponse res) {
 
 
         GeneralMemberDto memDto = null;
         RoleDto role = null;
-        int cookieExpireTime = 1*24*60*60;//1天
+        int cookieExpireTime = 1 * 24 * 60 * 60;//1天
 
         /*验证用户信息*/
-        if(result.hasErrors()){
-            return new JsonWrapper(false,result.getAllErrors()).getAjaxMessage();
+        if (result.hasErrors()) {
+            return new JsonWrapper(false, result.getAllErrors()).getAjaxMessage();
         }
 
         /*验证用户是否存在*/
         try {
-            accountService.login(mem.getUsername(),mem.getPassword());
+            accountService.login(mem.getUsername(), mem.getPassword());
         } catch (UserNotExistsException e) {
-            return new JsonWrapper(false,e.getMessage()).getAjaxMessage();
+            return new JsonWrapper(false, e.getMessage()).getAjaxMessage();
         } catch (PasswordIncorrectException e) {
-            return new JsonWrapper(false,e.getMessage()).getAjaxMessage();
+            return new JsonWrapper(false, e.getMessage()).getAjaxMessage();
         } catch (UserInvalidException e) {
-            return new JsonWrapper(false,e.getMessage()).getAjaxMessage();
+            return new JsonWrapper(false, e.getMessage()).getAjaxMessage();
         }
 
         /*获取用户信息和用户权限*/
 
-        memDto = accountService.findMember(mem.getUsername(),new GeneralMemberDto[0],true);
-        Credential credential = new TaolijieCredential(memDto.getId(),memDto.getUsername());
-        for(Integer rid:memDto.getRoleIdList()){
+        memDto = accountService.findMember(mem.getUsername(), new GeneralMemberDto[0], true);
+        Credential credential = new TaolijieCredential(memDto.getId(), memDto.getUsername());
+        for (Integer rid : memDto.getRoleIdList()) {
             role = accountService.findRole(rid);
             credential.addRole(role.getRolename());
 
-            if(logger.isDebugEnabled()){
-                logger.debug("RoleId:{}",rid);
-                logger.debug("RoleName:{}",role.getRolename());
+            if (logger.isDebugEnabled()) {
+                logger.debug("RoleId:{}", rid);
+                logger.debug("RoleName:{}", role.getRolename());
             }
         }
         //验证身份的session
-        CredentialUtils.createCredential(session,credential);
+        CredentialUtils.createCredential(session, credential);
         session.setAttribute("user", memDto);
+        session.setAttribute("role",role);
+
 
         /*如果选择自动登陆,加入cookie*/
-        if(mem.getRememberMe().equals("true")){
+        if (mem.getRememberMe().equals("true")) {
             Cookie usernameCookie = new Cookie("username", mem.getUsername());
             usernameCookie.setMaxAge(cookieExpireTime);
             Cookie passwordCookie = new Cookie("password", mem.getPassword());
@@ -536,19 +589,22 @@ public class HomeController {
     /**
      * 后台登陆页面
      */
-    @RequestMapping(value = "login/admin",method = RequestMethod.GET)
-    public String AdminLogin(){
+    @RequestMapping(value = "login/admin", method = RequestMethod.GET)
+    public String AdminLogin() {
         return "pc/admin/login";
     }
+
     /**
      * 管理员后台登陆
      */
-    @RequestMapping(value = "login/admin",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "login/admin", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     //region 管理员后台登陆 AdminLogin
-    public @ResponseBody String AdminLogin(@Valid LoginDto login,
-                                      BindingResult result,
-                                      HttpSession session,
-                                      HttpServletResponse res){
+    public
+    @ResponseBody
+    String AdminLogin(@Valid LoginDto login,
+                      BindingResult result,
+                      HttpSession session,
+                      HttpServletResponse res) {
 
         System.out.println("后台管理员登陆:::");
         System.out.println(login.getUsername());
@@ -556,40 +612,40 @@ public class HomeController {
 
         GeneralMemberDto memDto = null;
         RoleDto role = null;
-        int cookieExpireTime = 1*24*60*60;//1天
+        int cookieExpireTime = 1 * 24 * 60 * 60;//1天
 
-        if(result.hasErrors()){
-            return new JsonWrapper(false,result.getAllErrors()).getAjaxMessage();
+        if (result.hasErrors()) {
+            return new JsonWrapper(false, result.getAllErrors()).getAjaxMessage();
         }
 
         /*需要给管理员新增一个登陆方法*/
         try {
-            accountService.login(login.getUsername(),login.getPassword());
+            accountService.login(login.getUsername(), login.getPassword());
         } catch (UserNotExistsException e) {
-            return new JsonWrapper(false,e.getMessage()).getAjaxMessage();
+            return new JsonWrapper(false, e.getMessage()).getAjaxMessage();
         } catch (PasswordIncorrectException e) {
-            return new JsonWrapper(false,e.getMessage()).getAjaxMessage();
+            return new JsonWrapper(false, e.getMessage()).getAjaxMessage();
         } catch (UserInvalidException e) {
-            return new JsonWrapper(false,e.getMessage()).getAjaxMessage();
+            return new JsonWrapper(false, e.getMessage()).getAjaxMessage();
         }
 
         /*获取用户信息和用户权限*/
 
-        memDto = accountService.findMember(login.getUsername(),new GeneralMemberDto[0],true);
-        Credential credential = new TaolijieCredential(memDto.getId(),memDto.getUsername());
-        for(Integer rid:memDto.getRoleIdList()){
+        memDto = accountService.findMember(login.getUsername(), new GeneralMemberDto[0], true);
+        Credential credential = new TaolijieCredential(memDto.getId(), memDto.getUsername());
+        for (Integer rid : memDto.getRoleIdList()) {
             role = accountService.findRole(rid);
             /*如果不是管理员用户,返回登录失败信息*/
-            if(!role.getRolename().equals(Constants.RoleType.ADMIN.toString())){
+            if (!role.getRolename().equals(Constants.RoleType.ADMIN.toString())) {
                 return new JsonWrapper(false, Constants.ErrorType.USERNAME_NOT_EXISTS).getAjaxMessage();
-            }else{
+            } else {
                 credential.addRole(role.getRolename());
             }
         }
 
-        CredentialUtils.createCredential(session,credential);
+        CredentialUtils.createCredential(session, credential);
          /*如果选择自动登陆,加入cookie*/
-        if(login.getRememberMe().equals("true")){
+        if (login.getRememberMe().equals("true")) {
             Cookie usernameCookie = new Cookie("username", login.getUsername());
             usernameCookie.setMaxAge(cookieExpireTime);
             Cookie passwordCookie = new Cookie("password", login.getPassword());
@@ -604,40 +660,40 @@ public class HomeController {
     //endregion
 
 
-    @RequestMapping(value = "/404",method = RequestMethod.GET)
-    public String error(HttpServletResponse response){
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
+    public String error(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return "pc/404";
     }
 
 
     /**
-     * @param type 0代表兼职 , 1代表二手
+     * @param type    0代表兼职 , 1代表二手
      * @param content
      * @return
      */
-    @RequestMapping(value ="/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     public String search(@RequestParam String type,
                          @RequestParam String content,
                          @RequestParam(defaultValue = "1") int page,
-                         @RequestParam(defaultValue = Constants.PAGE_CAPACITY+"") int pageSize,
-                         Model model){
+                         @RequestParam(defaultValue = Constants.PAGE_CAPACITY + "") int pageSize,
+                         Model model) {
 
         //TODO 把搜索内容按空格划分
         ObjWrapper objWrapper = new ObjWrapper();
-        if(type.equals("0")){
-            List<JobPostDto> list = jobPostService.runSearch("title",content.trim(),page,pageSize,objWrapper);
-            int totalPage = (Integer)objWrapper.getObj();
-            model.addAttribute("jobs",list);
-            model.addAttribute("page",page);
-            model.addAttribute("totalPage",totalPage);
+        if (type.equals("0")) {
+            List<JobPostDto> list = jobPostService.runSearch("title", content.trim(), page, pageSize, objWrapper);
+            int totalPage = (Integer) objWrapper.getObj();
+            model.addAttribute("jobs", list);
+            model.addAttribute("page", page);
+            model.addAttribute("totalPage", totalPage);
             return "pc/joblist";
-        }else if(type.equals("1")){
-            List<SecondHandPostDto> list = shPostService.runSearch("title",content.trim(),page,pageSize,objWrapper);
-            int totalPage = (Integer)objWrapper.getObj();
-            model.addAttribute("shs",list);
-            model.addAttribute("page",page);
-            model.addAttribute("totalPage",totalPage);
+        } else if (type.equals("1")) {
+            List<SecondHandPostDto> list = shPostService.runSearch("title", content.trim(), page, pageSize, objWrapper);
+            int totalPage = (Integer) objWrapper.getObj();
+            model.addAttribute("shs", list);
+            model.addAttribute("page", page);
+            model.addAttribute("totalPage", totalPage);
             return "pc/shlist";
         }
 

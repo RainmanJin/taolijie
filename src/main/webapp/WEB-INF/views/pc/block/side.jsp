@@ -39,9 +39,9 @@
             <li>
                 <a href="/user/job/post"><i class="fa fa-check-square-o fa-lg"></i> 发布信息</a>
                 <ul class="submenu">
-                    <li>兼职</li>
-                    <li>兼职</li>
-                    <li>兼职</li>
+                    <li><a href="/user/job/post">发布兼职</a></li>
+                    <li ><a href="/user/sh/post">发布二手</a></li>
+                    <li ><a href="/user/resume/create">我的简历</a></li>
             </li>
         </ul>
     </div>
@@ -51,7 +51,9 @@
         </p>
         <ul>
             <c:forEach var="title" items="${titles}" varStatus="status">
-                <li class="news-${status.index+1}" style="padding-top: 50px;">${title.title}</li>
+                <li class="news-${status.index+1}" style="padding-top: 50px;">
+                <%--${title.title}--%>
+                </li>
             </c:forEach>
         </ul>
     </div>

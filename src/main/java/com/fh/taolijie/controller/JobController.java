@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -279,9 +280,23 @@ public class JobController {
      * @param session 用户的角色
      * @return
      */
-    @RequestMapping(value = "list", method = RequestMethod.GET)
-    public String list(HttpSession session) {
-        return "";
+    @RequestMapping(value = "mypost", method = RequestMethod.GET)
+    public String mypost(@RequestParam (defaultValue = "1") int page,
+                      @RequestParam (defaultValue = "9999") int capacity,
+                      HttpSession session, Model model){
+        Credential credential = CredentialUtils.getCredential(session);
+        ObjWrapper objWrapper = new ObjWrapper();
+        int totalPage = 0;
+        List<JobPostDto> jobs = jobPostService.getJobPostListByMember(credential.getId(),page-1,capacity,objWrapper);
+        totalPage = (Integer)objWrapper.getObj();
+
+        //TODO : 兼职列表没有memberDto是空的
+        model.addAttribute("jobs",jobs);
+        model.addAttribute("page",page);
+        model.addAttribute("totalPage",totalPage);
+        model.addAttribute("isFav",false);
+
+        return "pc/user/joblist";
     }
 
 
@@ -331,7 +346,6 @@ public class JobController {
                 break;
             }
         }
-
         String status;
         if(favid.equals("")){ //没有找到,则添加收藏
             jobPostService.favoritePost(credential.getId(),id);
@@ -345,48 +359,65 @@ public class JobController {
     }
     //endregion
 
-
-
-
     /**
-     * 我收藏的兼职 get
-     *
-     * @param session
-     * @return
+     * 取消收藏一条兼职 或多条
      */
-    @RequestMapping(value = "myfav", method = RequestMethod.GET)
-    public String myfav(HttpSession session) {
-        return "";
-    }
-
-    /**
-     * 我收藏的兼职 ajax
-     *
-     * @param page
-     * @param session
-     * @return
-     */
-    @RequestMapping(value = "myfav/{page}", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
-    public
-    @ResponseBody
-    String myfav(@PathVariable int page, HttpSession session) {
+    @RequestMapping(value = "/del/fav",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    public @ResponseBody String fav (HttpSession session,
+                                     @RequestParam(required = false) String ids){
         Credential credential = CredentialUtils.getCredential(session);
-        if(credential == null)
-            return new JsonWrapper(false, Constants.ErrorType.PERMISSION_ERROR).getAjaxMessage();
 
-        int capcity = Constants.PAGE_CAPACITY;
-        int start = capcity * (page - 1);
-
-
-        List<JobPostDto> list = null;
-
-        /*实现收藏*/
-        /*
-        *
-        * 暂时没有方法
-        * */
-        return JSON.toJSONString(list);
+        /*删除一个或多个*/
+          try{
+                for(String i : ids.split(";")){
+                    int currId = Integer.parseInt(i);
+                    jobPostService.unfavoritePost(credential.getId(), currId);
+                }
+            }catch (Exception e){
+                System.out.println("mutideleteError");
+                return new JsonWrapper(false, Constants.ErrorType.FAILED).getAjaxMessage();
+           }
+        return new JsonWrapper(true, Constants.ErrorType.SUCCESS).getAjaxMessage();
     }
+
+
+    /**
+     * 我收藏的兼职
+     */
+    @RequestMapping(value = "myfav" ,method = RequestMethod.GET)
+    public String fav(@RequestParam (defaultValue = "0") int page,
+                      @RequestParam (defaultValue = "9999") int capacity,
+                      HttpSession session, Model model){
+        Credential credential = CredentialUtils.getCredential(session);
+        ObjWrapper objWrapper = new ObjWrapper();
+        int totalPage = 0;
+        List<JobPostDto> jobs = new ArrayList<>();
+
+        GeneralMemberDto memberDto = accountService.findMember(credential.getId());
+        String favIds = memberDto.getFavoriteJobIds();
+        if(favIds != null && !favIds.equals("")){
+            for(String fid : favIds.split(";")){
+                JobPostDto job;
+                try{
+                    job = jobPostService.findJobPost(Integer.parseInt(fid));
+                }catch (Exception e){
+                    job = null;
+                }
+                if(job != null)
+                    jobs.add(job);
+            }
+        }
+
+
+        //TODO : 兼职列表没有memberDto是空的
+        model.addAttribute("jobs",jobs);
+        model.addAttribute("page",page);
+        model.addAttribute("isFav",true);
+
+        return "pc/user/joblist";
+    }
+
+
 
     /**
      * 获取已删除的兼职列表 Ajax GET
@@ -423,29 +454,52 @@ public class JobController {
 
 
     /**
-     * 删除一条兼职
+     * 删除兼职
      *
-     * @param id      兼职的id
+     * @param id      兼职的id 删除多条兼职id = 0,
      * @param session 用户的信息
      * @return
      */
     @RequestMapping(value = "del/{id}", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     public
     @ResponseBody
-    String del(@PathVariable int id, HttpSession session) {
+    String del(@PathVariable int id, HttpSession session,@RequestParam(required = false) String ids) {
         Credential credential = CredentialUtils.getCredential(session);
-        JobPostDto job = jobPostService.findJobPost(id);
 
+
+        /*删除多个*/
+        if(id == 0 && (ids != null && !ids.equals(""))){
+            try{
+                for(String i : ids.split(";")){
+                    int currId = Integer.parseInt(i);
+
+                    JobPostDto job = jobPostService.findJobPost(currId);
+                    if(!ControllerHelper.isCurrentUser(credential,job)){
+                        return new JsonWrapper(false, Constants.ErrorType.PERMISSION_ERROR).getAjaxMessage();
+                    }
+                    jobPostService.deleteJobPost(currId);
+                }
+            }catch (Exception e){
+                System.out.println("mutideleteError");
+                return new JsonWrapper(false, Constants.ErrorType.FAILED).getAjaxMessage();
+            }
+
+        }
+        /*删除单个*/
+        else{
+            JobPostDto job = jobPostService.findJobPost(id);
         /*判断兼职信息是否由当前用户发布*/
-        if(!ControllerHelper.isCurrentUser(credential,job)){
-            return new JsonWrapper(false, Constants.ErrorType.PERMISSION_ERROR).getAjaxMessage();
+            if(!ControllerHelper.isCurrentUser(credential,job)){
+                return new JsonWrapper(false, Constants.ErrorType.PERMISSION_ERROR).getAjaxMessage();
+            }
+
+            if (!jobPostService.deleteJobPost(id)) {
+                return new JsonWrapper(false, Constants.ErrorType.FAILED).getAjaxMessage();
+            }
         }
 
-        /*删除*/
 
-        if (!jobPostService.deleteJobPost(id)) {
-            return new JsonWrapper(false, Constants.ErrorType.FAILED).getAjaxMessage();
-        }
+
 
         return new JsonWrapper(true, Constants.ErrorType.SUCCESS).getAjaxMessage();
     }

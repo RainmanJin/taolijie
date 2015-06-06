@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
@@ -36,25 +37,20 @@ public class StaticController {
      *
      * @return
      */
-    @RequestMapping(value = "/images",method = RequestMethod.GET)
-    public String getPic(@PathVariable String imageStr){
-        return "";
-    }
+    @RequestMapping(value = "images/users/{id}",method = RequestMethod.GET)
+    public void getPic(@PathVariable int id,
+                         HttpServletResponse res) throws IOException {
+        ImageDto img = imageService.findImage(id);
 
-
-    @RequestMapping(value = "/images/jpeg",method = RequestMethod.GET,produces = MediaType.IMAGE_JPEG_VALUE)
-    public String getJPEG(){
-        return "";
+        byte[] bytes = img.getBinData();
+        String type = "image/"+img.getExtension();
+        res.setContentType(type);
+        res.setHeader("Cache-control","max-age=20");
+        OutputStream out = res.getOutputStream();
+        out.write(bytes);
+        out.flush();
+        out.close();
     }
-    @RequestMapping(value = "/images/png",method = RequestMethod.GET,produces = MediaType.IMAGE_PNG_VALUE)
-    public String getPNG(){
-        return "";
-    }
-    @RequestMapping(value = "/images/gif",method = RequestMethod.GET,produces = MediaType.IMAGE_GIF_VALUE)
-    public String getGIF(){
-        return "";
-    }
-
 
     /**
      * 上传图片options方法验证
@@ -89,7 +85,11 @@ public class StaticController {
             imageDto.setBinData(imageByte);
 
             String fileName = file.getOriginalFilename();
+            String fileExt = getExtensionName(fileName);
+
             imageDto.setFileName(fileName);
+            imageDto.setExtension(fileExt);
+
             // 写入数据库
             Integer imageId = imageService.saveImage(imageDto);
             System.out.println(imageId);
@@ -126,6 +126,23 @@ public class StaticController {
 
 
         return buffer.array();
+    }
+
+
+
+    /**
+     * 获得文件扩展名
+     * @param filename
+     * @return
+     */
+    private static String getExtensionName(String filename) {
+        if ((filename != null) && (filename.length() > 0)) {
+            int dot = filename.lastIndexOf('.');
+            if ((dot >-1) && (dot < (filename.length() - 1))) {
+                return filename.substring(dot + 1);
+            }
+        }
+        return filename;
     }
 
 }

@@ -36,6 +36,9 @@ import java.util.List;
 public class ResumeEntity implements PageViewAware {
     private Integer id;
     private String name;
+    private String title;
+    private String time;
+    private String school;
     private String gender;
     private Integer age;
     private Integer height;
@@ -60,7 +63,7 @@ public class ResumeEntity implements PageViewAware {
     private List<JobPostCategoryEntity> categoryList;
 
     public ResumeEntity() {}
-    public ResumeEntity(String name, String gender, Integer age, Integer height, String photoPath, String email, String qq, String experience, String introduce, MemberEntity member) {
+    public ResumeEntity(String name, String title, String time, String gender, Integer age, Integer height, String photoPath,String school, String email, String qq, String experience, String introduce, MemberEntity member) {
         this.name = name;
         this.gender = gender;
         this.age = age;
@@ -71,6 +74,9 @@ public class ResumeEntity implements PageViewAware {
         this.experience = experience;
         this.introduce = introduce;
         this.member = member;
+        this.title = title;
+        this.time = time;
+        this.school = school;
     }
 
     @Id
@@ -119,6 +125,38 @@ public class ResumeEntity implements PageViewAware {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Basic
+    @Column(name = "title")
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Basic
+    @Column(name = "time")
+    public String getTime() {
+        return time;
+    }
+
+    @Basic
+    @Column(name = "school")
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
+    public void setTime(String time) {
+
+
+        this.time = time;
     }
 
     @Basic
@@ -244,6 +282,8 @@ public class ResumeEntity implements PageViewAware {
 
         if (age != null ? !age.equals(that.age) : that.age != null) return false;
         if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (title !=null ? !title.equals(that.title) : that.title !=null) return false;
+        if (time !=null ? !time.equals(that.time) : that.time !=null) return false;
         if (experience != null ? !experience.equals(that.experience) : that.experience != null) return false;
         if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
         if (height != null ? !height.equals(that.height) : that.height != null) return false;
@@ -252,6 +292,7 @@ public class ResumeEntity implements PageViewAware {
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (photoPath != null ? !photoPath.equals(that.photoPath) : that.photoPath != null) return false;
         if (qq != null ? !qq.equals(that.qq) : that.qq != null) return false;
+        if (school != null ? !school.equals(that.school) : that.school != null) return false;
 
         return true;
     }
@@ -268,6 +309,9 @@ public class ResumeEntity implements PageViewAware {
         result = 31 * result + (qq != null ? qq.hashCode() : 0);
         result = 31 * result + (experience != null ? experience.hashCode() : 0);
         result = 31 * result + (introduce != null ? introduce.hashCode() : 0);
+        result = 31 * result + (time != null ? time.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (school != null ? school.hashCode() : 0);
         return result;
     }
 

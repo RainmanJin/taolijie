@@ -28,7 +28,7 @@
   <!-- 正文 -->
   <div class="main index">
     <div class="segment">
-      <p class="pin-title">最火的兼职
+      <p class="pin-title"><a href="/list/job" style="color:#fff;">最火的兼职</a>
         <i class="pin-arrow"></i>
       </p>
     </div>
@@ -38,7 +38,7 @@
       <c:forEach var="job" items="${jobs}">
         <a href="/item/job/${job.id}" style="color:#333333;">
           <div class="job-slip">
-            <span class="cate">${job.categoryName}</span>
+            <span class="cate" style="">${job.categoryName}</span>
             <span class="content">${job.title}</span>
           </div>
         </a>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="segment">
-      <p class="pin-title">最畅销的二手
+      <p class="pin-title"><a href="/list/sh" style="color:#fff;">最畅销的二手</a>
         <i class="pin-arrow"></i>
       </p>
     </div>
@@ -77,7 +77,7 @@
     <div style="clean:both"></div>
 
     <div class="segment">
-      <p class="pin-title">最帅的我们
+      <p class="pin-title"><a href="/about/index.html#fourthPage" style="color:#fff;">最帅的我们</a>
         <i class="pin-arrow"></i>
       </p>
     </div>

@@ -3,10 +3,7 @@ package com.fh.taolijie.controller;
 import cn.fh.security.credential.Credential;
 import cn.fh.security.utils.CredentialUtils;
 import com.alibaba.fastjson.JSON;
-import com.fh.taolijie.controller.dto.GeneralMemberDto;
-import com.fh.taolijie.controller.dto.JobPostCategoryDto;
-import com.fh.taolijie.controller.dto.JobPostDto;
-import com.fh.taolijie.controller.dto.ResumeDto;
+import com.fh.taolijie.controller.dto.*;
 import com.fh.taolijie.service.AccountService;
 import com.fh.taolijie.service.JobPostCateService;
 import com.fh.taolijie.service.JobPostService;
@@ -85,13 +82,18 @@ public class ResumeController{
     public @ResponseBody String create(@Valid ResumeDto resume,
                BindingResult result,
                HttpSession session){
+        Credential credential = CredentialUtils.getCredential(session);
         GeneralMemberDto mem = null;
+
+        RoleDto role = accountService.findRole(Integer.parseInt(credential.getRoleList().get(0)));
+        if(role.getRolename().equals(Constants.RoleType.EMPLOYER.toString())){
+            return new JsonWrapper(false, Constants.ErrorType.PERMISSION_ERROR).getAjaxMessage();
+        }
 
         if (result.hasErrors()) {
             return new JsonWrapper(false, result.getAllErrors()).getAjaxMessage();
         }
-        String username = CredentialUtils.getCredential(session).getUsername();
-        mem = accountService.findMember(username, new GeneralMemberDto[0], false);
+        mem = accountService.findMember(credential.getUsername(), new GeneralMemberDto[0], false);
 
         /*创建信息*/
         resume.setMemberId(mem.getId());

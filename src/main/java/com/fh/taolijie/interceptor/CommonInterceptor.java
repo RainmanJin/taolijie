@@ -1,19 +1,15 @@
 package com.fh.taolijie.interceptor;
 
-import com.alibaba.fastjson.JSON;
 import com.fh.taolijie.controller.dto.JobPostCategoryDto;
 import com.fh.taolijie.controller.dto.NewsDto;
-import com.fh.taolijie.controller.dto.ResumeDto;
 import com.fh.taolijie.controller.dto.SecondHandPostCategoryDto;
 import com.fh.taolijie.service.JobPostCateService;
 import com.fh.taolijie.service.NewsService;
 import com.fh.taolijie.service.ResumeService;
 import com.fh.taolijie.service.SHPostCategoryService;
-import com.fh.taolijie.utils.Constants;
 import com.fh.taolijie.utils.ObjWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;

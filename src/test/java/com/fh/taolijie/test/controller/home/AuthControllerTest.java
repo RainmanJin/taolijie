@@ -102,7 +102,7 @@ public class AuthControllerTest extends BaseSpringDataTestClass {
         //带着session去访问login页面
         mockMvc.perform(get("/login")
                 .session(session))
-                .andExpect(status().isFound())
+                .andExpect(status().isOk())
                 .andReturn();
     }
     //endregion

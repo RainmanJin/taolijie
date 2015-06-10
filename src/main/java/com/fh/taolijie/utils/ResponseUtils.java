@@ -30,7 +30,7 @@ public class ResponseUtils {
             sb.append("mobile/");
         } else {
             /*调试用*/
-            sb.append("mobile/");
+            sb.append("pc/");
         }
 
         sb.append(jspPage);
